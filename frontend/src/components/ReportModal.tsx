@@ -8,7 +8,7 @@ interface ReportModalProps {
   onClose: () => void;
 }
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose }) => {
   const [report, setReport] = useState<LowestPriceReport | null>(null);

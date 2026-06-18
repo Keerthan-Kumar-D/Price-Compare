@@ -1,6 +1,6 @@
 import { Product } from '../types/product';
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export const saveProductAndGetId = async (productData: Product, tempId: string, token: string): Promise<string> => {
   if (!token) throw new Error('No authentication token');

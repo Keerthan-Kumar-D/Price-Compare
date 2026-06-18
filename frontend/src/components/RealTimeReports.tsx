@@ -56,9 +56,9 @@ const RealTimeReports: React.FC<RealTimeReportsProps> = ({ onClose, preGenerated
     try {
       console.log('Fetching real-time data for:', searchQuery);
 
-      // Fetch from all platforms (5 products per platform for a total of ~20-25 products)
-      const response = await fetch(`http://localhost:8000/api/scrape/all?query=${encodeURIComponent(searchQuery)}&limit=5`);
-      
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/scrape/all?query=${encodeURIComponent(searchQuery)}&limit=5`
+      );
       if (!response.ok) {
         throw new Error('Failed to fetch data');
       }

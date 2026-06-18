@@ -54,7 +54,13 @@ async def _connect_with_uri(mongodb_uri: str, database_name: str):
 async def connect_to_mongo():
     """Create database connection"""
     try:
-        mongodb_uri = _get_env_value("MONGODB_URI", "MONGODB_URL") or DEFAULT_LOCAL_MONGO_URI
+        mongodb_uri = _get_env_value("MONGODB_URI", "MONGODB_URL")
+
+        print("========== MONGO DEBUG ==========")
+        print("MONGODB_URI =", mongodb_uri)
+        print("=================================")
+
+        mongodb_uri = mongodb_uri or DEFAULT_LOCAL_MONGO_URI
         if not mongodb_uri:
             raise ValueError("MongoDB connection string is not configured")
 

@@ -3,7 +3,7 @@ import { WishlistItem } from '../types/product';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export const useWishlist = () => {
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
