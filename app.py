@@ -14,8 +14,7 @@ from contextlib import asynccontextmanager
 import scrappers.amazonScrapper as amazon_scrapper
 import scrappers.flipkarScrapper as flipkart_scrapper
 import scrappers.flipkart_selenium as flipkart_selenium_scrapper
-import scrappers.relianceDigitalScrapper as reliance_scrapper
-# Use Selenium scraper for Myntra (handles JavaScript rendering)
+
 import scrappers.myntra_selenium as myntra_scrapper
 # Import Meesho scraper
 from scrappers.meeshoscrapper import search_meesho
@@ -242,64 +241,10 @@ async def scrape_flipkart(
         logger.error(f"Flipkart scraping failed: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Flipkart scraping failed: {str(e)}")
 
-# Reliance Digital scraper endpoint
-@app.get("/api/scrape/reliance-digital", response_model=ScrapingResponse, tags=["Scrapers"])
-async def scrape_reliance_digital(
-    query: str = Query(..., description="Search query for products", min_length=1),
-    limit: int = Query(10, description="Maximum number of products to return", ge=1, le=50)
-):
-    """
-    Scrape products from Reliance Digital
+
     
-    - **query**: Search term for products (required)
-    - **limit**: Maximum number of products to return (1-50, default: 10)
-    
-    Note: Reliance Digital uses JavaScript rendering, so this endpoint may return limited data
-    """
-    try:
-        logger.info(f"Scraping Reliance Digital for query: {query}")
-        
-        # Get search URL and fetch results
-        search_url = reliance_scrapper.search_reliance_digital_product(query)
-        html_content = reliance_scrapper.fetch_reliance_digital_search_results(search_url)
-        products_data = reliance_scrapper.parse_reliance_digital_html(html_content)
-        
-        # Convert to Pydantic models and limit results
-        products = []
-        for product_data in products_data[:limit]:
-            product = Product(
-                title=product_data.get('title', ''),
-                price=product_data.get('price', ''),
-                mrp=product_data.get('mrp'),
-                discount=product_data.get('discount'),
-                savings=product_data.get('savings'),
-                rating=product_data.get('rating'),
-                special_tag=product_data.get('special_tag'),
-                brand=product_data.get('brand'),
-                delivery=product_data.get('delivery'),
-                image_url=product_data.get('image_url'),
-                product_link=product_data.get('product_link')
-            )
-            products.append(product)
-        
-        # Check if JavaScript rendering is detected
-        message = None
-        if len(products) == 1 and "JavaScript-rendered" in products[0].title:
-            message = "This platform uses JavaScript rendering. Consider using Selenium for complete data extraction."
-        
-        return ScrapingResponse(
-            platform="Reliance Digital",
-            search_query=query,
-            total_products=len(products),
-            products=products,
-            scraped_at=get_current_timestamp(),
-            status="partial" if message else "success",
-            message=message
-        )
-        
-    except Exception as e:
-        logger.error(f"Reliance Digital scraping failed: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Reliance Digital scraping failed: {str(e)}")
+                
+ 
 
 # Myntra scraper endpoint (using Selenium)
 @app.get("/api/scrape/myntra", response_model=ScrapingResponse, tags=["Scrapers"])
@@ -471,15 +416,16 @@ async def scrape_all_platforms(
         
         amazon_task = scrape_with_timeout(scrape_amazon(query, limit), 5)
         flipkart_task = scrape_with_timeout(scrape_flipkart(query, limit), 5)
-        reliance_task = scrape_with_timeout(scrape_reliance_digital(query, limit), 5)
         myntra_task = scrape_with_timeout(scrape_myntra(query, limit), 8)
         meesho_task = scrape_with_timeout(scrape_meesho(query, limit, scroll_count=1), 25)
         
         # Wait for all tasks to complete
-        amazon_response, flipkart_response, reliance_response, myntra_response, meesho_response = await asyncio.gather(
-            amazon_task, flipkart_task, reliance_task, myntra_task, meesho_task,
+        amazon_response, flipkart_response, myntra_response, meesho_response = await asyncio.gather(
+            amazon_task, flipkart_task, myntra_task, meesho_task,
             return_exceptions=True
         )
+
+        reliance_response = None
         
         platforms = {}
         total_products = 0

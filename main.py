@@ -1,6 +1,5 @@
 import scrappers.amazonScrapper as amazon_scrapper
 import scrappers.flipkarScrapper as flipkart_scrapper
-import scrappers.relianceDigitalScrapper as reliance_scrapper
 
 def scrape_amazon(search_query):
     print(f"=== AMAZON RESULTS FOR '{search_query}' ===\n")
@@ -73,44 +72,7 @@ def scrape_flipkart(search_query):
     except Exception as e:
         print(f"Flipkart scraping failed: {e}")
 
-def scrape_reliance_digital(search_query):
-    print(f"\n=== RELIANCE DIGITAL RESULTS FOR '{search_query}' ===\n")
-    try:
-        search_url = reliance_scrapper.search_reliance_digital_product(search_query)
-        html_content = reliance_scrapper.fetch_reliance_digital_search_results(search_url)
-        products = reliance_scrapper.parse_reliance_digital_html(html_content)
-        
-        print(f"Found {len(products)} products on Reliance Digital:\n")
-        
-        for i, product in enumerate(products[:5], 1):  # Show first 5 products
-            print(f"--- Product {i} ---")
-            print(f"Title: {product['title']}")
-            print(f"Price: {product['price']}")
-            
-            if product['mrp']:
-                print(f"MRP: {product['mrp']}")
-            
-            if product['discount']:
-                print(f"Discount: {product['discount']}")
-            
-            if product['savings']:
-                print(f"Savings: {product['savings']}")
-            
-            if product['rating']:
-                print(f"Rating: {product['rating']} stars")
-            
-            if product['special_tag']:
-                print(f"Special Tag: {product['special_tag']}")
-            
-            if product.get('brand'):
-                print(f"Brand: {product['brand']}")
-            
-            if product['delivery']:
-                print(f"Delivery: {product['delivery']}")
-            
-            print("-" * 50)
-    except Exception as e:
-        print(f"Reliance Digital scraping failed: {e}")
+
 
 def main():
     search_query = "laptop"
@@ -118,7 +80,7 @@ def main():
     # Scrape all three platforms
     scrape_amazon(search_query)
     scrape_flipkart(search_query)
-    scrape_reliance_digital(search_query)
+    
     
     print("\n" + "="*60)
     print("SCRAPING SUMMARY")

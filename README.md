@@ -26,6 +26,68 @@ A FastAPI-based REST API for scraping products from major Indian e-commerce plat
 
 ## 💾 Installation
 
+## ⚡ Quick Start
+
+This is the shortest path to running the full project locally.
+
+### Prerequisites
+- Python 3.8+
+- Node.js 16+
+- MongoDB running locally or a MongoDB Atlas connection string
+- Google Chrome if you want to use the Selenium-based scrapers
+
+### 1. Backend
+
+Install Python dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Create a `.env` file in the project root and set at least these values:
+
+```env
+MONGODB_URI=mongodb://localhost:27017
+MONGODB_DB_NAME=scraper_db
+JWT_SECRET_KEY=your-secret-key-here
+ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000
+```
+
+Start the backend:
+
+```bash
+python app.py
+```
+
+The API will run at `http://localhost:8000`.
+
+### 2. Frontend
+
+Install frontend dependencies:
+
+```bash
+cd frontend
+npm install
+```
+
+Start the frontend dev server:
+
+```bash
+npm run dev
+```
+
+The frontend will run at `http://localhost:5173`.
+
+### 3. Open the app
+
+- API docs: `http://localhost:8000/docs`
+- Frontend: `http://localhost:5173`
+
+### Notes
+- If MongoDB Atlas SRV resolution fails, use a local MongoDB URI in `MONGODB_URI`.
+- The backend also supports `MONGODB_FALLBACK_URI` for development.
+- If you only want the detailed setup steps, continue below.
+
 ### Prerequisites
 - Python 3.8+
 - pip package manager
@@ -50,12 +112,12 @@ A FastAPI-based REST API for scraping products from major Indian e-commerce plat
    ```env
    # MongoDB Configuration
   MONGODB_URI=mongodb://localhost:27017
-   MONGODB_DB_NAME=ecommerce_scraper
+  MONGODB_DB_NAME=scraper_db
   # Optional fallback if Atlas SRV resolution fails
   # MONGODB_FALLBACK_URI=mongodb://localhost:27017
    
    # JWT Secret Key (generate a secure random key)
-   SECRET_KEY=your-secret-key-here
+  JWT_SECRET_KEY=your-secret-key-here
    ALGORITHM=HS256
    ACCESS_TOKEN_EXPIRE_MINUTES=30
    
