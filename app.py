@@ -54,7 +54,8 @@ app = FastAPI(
 )
 
 # CORS middleware for React frontend
-allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:3000").split(",")
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:3000").split(",") 
+print("ALLOWED_ORIGINS =", allowed_origins)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
