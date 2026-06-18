@@ -152,7 +152,11 @@ async def save_scraped_products(search_query: str, scraped_data: dict):
                         search_keywords=product_data['search_keywords']
                     )
                     
-                    await db.products.insert_one(new_product.dict(by_alias=True))
+                    product_doc = new_product.dict(by_alias=True)
+
+                    product_doc.pop("_id", None)
+
+                    await db.products.insert_one(product_doc)
                 
                 saved_count += 1
                 
