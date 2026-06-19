@@ -2,10 +2,6 @@ from bs4 import BeautifulSoup
 import requests
 import time
 import random
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
 
 headers = {
     "User-Agent": (
@@ -82,40 +78,10 @@ def fetch_amazon_search_results(search_url):
                 time.sleep(backoff)
                 backoff *= 2
                 continue
-            # After retries, break to attempt Selenium fallback
+            # After retries, break to retry logic
             break
 
-    # If all retries fail, attempt Selenium fallback (often bypasses 503 blocks)
-    print("Failed to fetch Amazon search results after retries; attempting Selenium fallback")
-    try:
-        print("Attempting Selenium fallback for Amazon...")
-        chrome_options = Options()
-        chrome_options.add_argument('--headless=new')
-        chrome_options.add_argument('--no-sandbox')
-        chrome_options.add_argument('--disable-dev-shm-usage')
-        chrome_options.add_argument('--disable-gpu')
-        chrome_options.add_argument('--window-size=1920,1080')
-        chrome_options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36')
-        chrome_options.add_argument('--log-level=3')
-
-        service = Service(ChromeDriverManager().install())
-        driver = webdriver.Chrome(service=service, options=chrome_options)
-        try:
-            driver.set_page_load_timeout(20)
-            driver.get(search_url)
-            time.sleep(2)
-            html = driver.page_source or ''
-            if html:
-                print('Selenium fallback succeeded for Amazon')
-                return html
-        finally:
-            try:
-                driver.quit()
-            except:
-                pass
-    except Exception as se:
-        print(f"Selenium fallback failed: {se}")
-
+    print("Failed to fetch Amazon search results after retries")
     return ""
 
 

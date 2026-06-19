@@ -4,10 +4,10 @@ Price Compare is a full-stack product comparison application built for Indian e-
 
 ## Scrapers overview
 
-- Amazon scraper: Uses `requests` + `BeautifulSoup` for fast HTML parsing, with retry and Selenium fallback when blocked.
-- Flipkart scraper: Uses Selenium to handle JavaScript-rendered content and reliably capture product images, links, and pricing fields.
-- Myntra scraper: Uses Selenium with product-card selectors to extract fashion-specific fields like brand, discount, and ratings.
-- Meesho scraper: Uses Selenium + BeautifulSoup to parse product cards and extract details such as price, discount, reviews, and COD availability.
+- Amazon scraper: Uses `requests` + `BeautifulSoup` for fast HTML parsing, with automatic retry on failures.
+- Flipkart scraper: Uses HTTP requests + BeautifulSoup to extract product images, links, and pricing fields.
+- Myntra scraper: Uses Playwright browser automation with product-card selectors to extract fashion-specific fields like brand, discount, and ratings.
+- Meesho scraper: Uses Playwright + BeautifulSoup to parse product cards and extract details such as price, discount, reviews, and COD availability.
 - Multi-platform endpoint: `/api/scrape/all` runs scrapers concurrently, combines results, caches responses for 5 minutes, and stores data for reporting.
 
 ## Project features

@@ -87,7 +87,7 @@ def main():
     print("="*60)
     print("✅ Amazon: Fully functional - extracts comprehensive product data")
     print("✅ Flipkart: Fully functional - extracts comprehensive product data")
-    print("⚠️  Reliance Digital: JavaScript-heavy site - requires advanced tools like Selenium")
+    print("⚠️  Reliance Digital: JavaScript-heavy site - requires advanced browser automation")
     print("\nNote: Reliance Digital uses dynamic content loading and requires")
     print("JavaScript rendering for complete data extraction.")
 

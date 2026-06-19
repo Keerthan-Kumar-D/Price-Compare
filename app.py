@@ -13,8 +13,6 @@ from contextlib import asynccontextmanager
 # Import scrapers
 import scrappers.amazonScrapper as amazon_scrapper
 import scrappers.flipkarScrapper as flipkart_scrapper
-import scrappers.flipkart_selenium as flipkart_selenium_scrapper
-
 import scrappers.myntra_selenium as myntra_scrapper
 # Import Meesho scraper
 from scrappers.meeshoscrapper import search_meesho
@@ -250,7 +248,7 @@ async def scrape_flipkart(
                 
  
 
-# Myntra scraper endpoint (using Selenium)
+# Myntra scraper endpoint (using Playwright)
 @app.get("/api/scrape/myntra", response_model=ScrapingResponse, tags=["Scrapers"])
 async def scrape_myntra(
     query: str = Query(..., description="Search query for products", min_length=1),
@@ -305,7 +303,7 @@ async def scrape_myntra(
         logger.error(f"Myntra scraping failed: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Myntra scraping failed: {str(e)}")
 
-# Meesho scraper endpoint (using Selenium)
+# Meesho scraper endpoint (using Playwright)
 @app.get("/api/scrape/meesho", response_model=ScrapingResponse, tags=["Scrapers"])
 async def scrape_meesho(
     query: str = Query(..., description="Search query for products", min_length=1),
@@ -322,7 +320,7 @@ async def scrape_meesho(
     Note: This uses Playwright to handle JavaScript rendering. Takes 10-20 seconds per request.
     """
     try:
-        logger.info(f"Scraping Meesho with Selenium for query: {query}")
+        logger.info(f"Scraping Meesho with Playwright for query: {query}")
         
         # Use Meesho scraper (handles JavaScript rendering)
         products_data = await asyncio.to_thread(
