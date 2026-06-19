@@ -211,6 +211,9 @@ async def scrape_flipkart(
         html_content = flipkart_scrapper.fetch_flipkart_search_results(search_url)
         products_data = flipkart_scrapper.parse_flipkart_html(html_content)
         
+        # Limit results
+        products_data = products_data[:limit]
+        
         # Convert to Pydantic models
         products = []
         for product_data in products_data:
@@ -229,6 +232,8 @@ async def scrape_flipkart(
                 delivery=product_data.get('delivery')
             )
             products.append(product)
+        
+        logger.info(f"Returning {len(products)} Flipkart products (limit: {limit})")
         
         return ScrapingResponse(
             platform="Flipkart",
