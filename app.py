@@ -198,19 +198,20 @@ async def scrape_flipkart(
     limit: int = Query(10, description="Maximum number of products to return", ge=1, le=50)
 ):
     """
-    Scrape products from Flipkart using Selenium for consistent image loading
-    
+    Scrape products from Flipkart using requests + BeautifulSoup
+
     - **query**: Search term for products (required)
     - **limit**: Maximum number of products to return (1-50, default: 10)
-    
-    Note: Uses Selenium WebDriver to ensure images load properly. Takes ~10-15 seconds.
+
+    Note: Fast scraper (~2-3 seconds) using lightweight HTTP requests.
     """
     try:
-        logger.info(f"Scraping Flipkart with Selenium for query: {query}")
-        
-        # Use Selenium for all Flipkart searches to ensure images load
-        products_data = flipkart_selenium_scrapper.search_flipkart_selenium(query)
-        products_data = products_data[:limit]  # Limit results
+        logger.info(f"Scraping Flipkart for query: {query}")
+
+        # Use simple requests-based scraper (works well for Flipkart)
+        search_url = flipkart_scrapper.search_flipkart_product(query)
+        html_content = flipkart_scrapper.fetch_flipkart_search_results(search_url)
+        products_data = flipkart_scrapper.parse_flipkart_html(html_content)
         
         # Convert to Pydantic models
         products = []
@@ -256,18 +257,18 @@ async def scrape_myntra(
     limit: int = Query(10, description="Maximum number of products to return", ge=1, le=50)
 ):
     """
-    Scrape products from Myntra using Selenium WebDriver
-    
+    Scrape products from Myntra using Playwright
+
     - **query**: Search term for products (required)
     - **limit**: Maximum number of products to return (1-50, default: 10)
-    
-    Note: This uses Selenium to handle JavaScript rendering. Takes 20-30 seconds per request.
+
+    Note: Uses Playwright to handle JavaScript rendering. Takes 20-30 seconds per request.
     """
     try:
-        logger.info(f"Scraping Myntra with Selenium for query: {query}")
-        
-        # Use Selenium scraper (handles JavaScript rendering)
-        products_data = myntra_scrapper.scrape_myntra_selenium(query, max_products=limit)
+        logger.info(f"Scraping Myntra with Playwright for query: {query}")
+
+        # Use Playwright scraper (handles JavaScript rendering)
+        products_data = myntra_scrapper.scrape_myntra_playwright(query, max_products=limit)
         
         # Convert to Pydantic models
         products = []
@@ -312,13 +313,13 @@ async def scrape_meesho(
     scroll_count: int = Query(3, description="Number of scrolls to load more products", ge=1, le=10)
 ):
     """
-    Scrape products from Meesho using Selenium WebDriver
-    
+    Scrape products from Meesho using Playwright browser automation
+
     - **query**: Search term for products (required)
     - **limit**: Maximum number of products to return (1-50, default: 10)
     - **scroll_count**: Number of scrolls to load more products (1-10, default: 3)
-    
-    Note: This uses Selenium to handle JavaScript rendering. Takes 10-20 seconds per request.
+
+    Note: This uses Playwright to handle JavaScript rendering. Takes 10-20 seconds per request.
     """
     try:
         logger.info(f"Scraping Meesho with Selenium for query: {query}")
@@ -573,14 +574,14 @@ async def get_platforms():
                 "endpoint": "/api/scrape/myntra",
                 "status": "fully_supported",
                 "features": ["brand", "prices", "ratings", "reviews", "discounts"],
-                "note": "Uses Selenium WebDriver for JavaScript rendering. Optimized to ~3-4 seconds."
+                "note": "Uses Playwright browser automation for JavaScript rendering. Optimized to ~3-4 seconds."
             },
             {
                 "name": "Meesho",
                 "endpoint": "/api/scrape/meesho",
                 "status": "fully_supported",
                 "features": ["prices", "ratings", "reviews", "discounts", "delivery_info", "cod_available"],
-                "note": "Uses Selenium WebDriver for JavaScript rendering. Optimized to ~3-4 seconds."
+                "note": "Uses Playwright browser automation for JavaScript rendering. Optimized to ~3-4 seconds."
             }
         ],
         "comparison_endpoint": "/api/scrape/all",
